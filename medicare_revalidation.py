@@ -18,7 +18,7 @@ if osRunningScript == 'Darwin':
 if osRunningScript == 'Windows':
     excelLocation = '\\results\\Medicare_Revalidation_Results.xlsx'
 
-debugNPIList = ['1043294358']
+debugNPIList = ['1144395195', '1184154536', '1386640035']
 
 #-----------------MAIN----------------#
 try:
