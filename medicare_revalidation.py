@@ -46,7 +46,7 @@ for row in range(1,totalRows):
         npiValue = debugNPIList[row-1]
     else:
         rowNumberIncludingHeader = row + 1
-        cell = sheet.cell(row = rowNumberIncludingHeader, column = 1)
+        cell = sheet.cell(row=rowNumberIncludingHeader, column=1)
         npiValue = cell.value
 
     if onlyAdjustedDates:
@@ -84,39 +84,39 @@ for row in range(1,totalRows):
     if debug:
         pass
     else:
-        rowName = sheet.cell(row = rowNumberIncludingHeader, column = 2)
+        rowName = sheet.cell(row=rowNumberIncludingHeader, column=2)
         rowName.value = str(organization)
 
-        rowDueDate = sheet.cell(row = rowNumberIncludingHeader, column = 3)
+        rowDueDate = sheet.cell(row=rowNumberIncludingHeader, column=3)
         try:
             dueDateConverted = datetime.datetime.strptime(dueDate, "%m/%d/%Y")
             rowDueDate.value = dueDateConverted
         except:
             rowDueDate.value = dueDate
 
-        rowAdjustedDueDate = sheet.cell(row = rowNumberIncludingHeader, column = 4)
+        rowAdjustedDueDate = sheet.cell(row=rowNumberIncludingHeader, column=4)
         try:
             adjustedDueDateConverted = datetime.datetime.strptime(adjustedDueDate, "%m/%d/%Y")
             rowAdjustedDueDate.value = adjustedDueDateConverted
         except:
             rowAdjustedDueDate.value = adjustedDueDate
 
-        rowState = sheet.cell(row = rowNumberIncludingHeader, column = 5)
+        rowState = sheet.cell(row=rowNumberIncludingHeader, column=5)
         rowState.value = str(state).replace('State: ', '')
 
-        rowSpecialty = sheet.cell(row = rowNumberIncludingHeader, column = 6)
+        rowSpecialty = sheet.cell(row=rowNumberIncludingHeader, column=6)
         rowSpecialty.value = str(specialty).replace('Specialty: ', '')
 
-        rowReassignedProviders = sheet.cell(row = rowNumberIncludingHeader, column = 7)
+        rowReassignedProviders = sheet.cell(row=rowNumberIncludingHeader, column=7)
         try:
             rowReassignedProviders.value = int(str(reassignedProviders).replace('Reassigned Providers: ', ''))
         except:
             rowReassignedProviders.value = reassignedProviders
 
-        rowEnrollmentType = sheet.cell(row = rowNumberIncludingHeader, column = 8)
+        rowEnrollmentType = sheet.cell(row=rowNumberIncludingHeader, column=8)
         rowEnrollmentType.value = str(enrollmentType).replace('Enrollment Type: ', '')
 
-        rowLastChecked = sheet.cell(row = rowNumberIncludingHeader, column = 9)
+        rowLastChecked = sheet.cell(row=rowNumberIncludingHeader, column=9)
         rowLastChecked.value = startTime
 
 if debug:
