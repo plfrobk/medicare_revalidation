@@ -1,0 +1,70 @@
+pip install pandas
+
+import datetime
+import pandas as pd
+
+#-----------GLOBAL VARIABLES----------#
+onlyAdjustedDates = False
+npiList = ['1003813718', '1003862012', '1013081215', '1023548930', '1043294358', '1043411069', '1053609727', '1073921284', '1083784219', '1104184365', '1114474707', '1124059407', '1134150337', '1134171044', '1134320153', '1144395195', '1144491077', '1144551698', '1154857803', '1164428934', '1174139935', '1184154536', '1184230948', '1205126349', '1215150305', '1215235494', '1235270588', '1235352303', '1235418096', '1245236017', '1275674533', '1295842508', '1306891825', '1316432180', '1316947864', '1326292442', '1326382755', '1336408848', '1336653047', '1356482749', '1366498164', '1366816027', '1366972713', '1376583617', '1376729483', '1386054989', '1386640035', '1386696086', '1386751162', '1396741047', '1396791307', '1396968491', '1407853112', '1417158437', '1427053453', '1457688954', '1457881807', '1467851840', '1477169233', '1497370951', '1518175405', '1518901610', '1528014982', '1528094109', '1538309307', '1538332101', '1538369129', '1538529755', '1548790991', '1548812852', '1568555381', '1568834653', '1619518610', '1629435417', '1629729454', '1639100985', '1639609084', '1649493693', '1659594737', '1659701944', '1669695722', '1669726477', '1669891032', '1669957247', '1679746267', '1679887335', '1689682932', '1699719989', '1700889656', '1710095021', '1710187299', '1710416136', '1720236169', '1720391329', '1720506785', '1720518178', '1720530660', '1720678543', '1730563651', '1740242718', '1770004418', '1770509051', '1790080950', '1821503756', '1831136472', '1831489970', '1841221140', '1841517281', '1841693306', '1861918641', '1881632909', '1891918942', '1912120007', '1912228727', '1912574088', '1932183936', '1932312626', '1952357964', '1962660399', '1972559961', '1982827929', '1982951182', '1992276372', '1992736227', '1992751382', '1992928956']
+baseURL = 'https://data.cms.gov/tools/medicare-revalidation-list?size=10&offset=0&npi='
+adjustedDatesURL = '&dateFilterType=withAdjustedDueDates'
+
+##-----------------INIT-----------------#
+
+try:
+  browser = ChromeWebDriver()
+except:
+  dbutils.notebook.run("/Users/robert.kairis@revintsolutions.com/Selenium/Selenium_Setup", 60)
+  browser = ChromeWebDriver()
+
+browser = ChromeWebDriver()
+
+startTime = datetime.datetime.now()
+currentMonth = startTime.strftime("%b")
+currentYear = str(startTime.year)
+currentDate = datetime.date.today()
+
+print('Started testing at: ' + str(startTime))
+
+outputFinalList = []
+
+for npi in npiList:
+    if onlyAdjustedDates:
+        browser.get(baseURL + str(npi) + adjustedDatesURL)
+    else:
+        browser.get(baseURL + str(npi))
+
+    try:
+        organization = browser.grab_element_text('a', 'class', 'ToolResults_row_name', waitBefore=2, timeout=1)
+    except:
+        organization = '**Not Found**'
+
+    if organization != '**Not Found**':
+        dueDate = browser.grab_element_text('div', 'class', 'gray revalidation_date_size', timeout=0.25)
+        adjustedDueDate = browser.grab_element_text('div', 'class', 'revalidation_date_size', timeout=0.25)
+        stateTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]'
+        specialtyTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]'
+        reassignedProvidersTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[3]'
+        enrollmentTypeTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[4]'
+
+        state = browser.grab_element_text_xpath(stateTextXPath, timeout=0.25)
+        specialty = browser.grab_element_text_xpath(specialtyTextXPath, timeout=0.25)
+        reassignedProviders = browser.grab_element_text_xpath(reassignedProvidersTextXPath, timeout=0.25)
+        enrollmentType = browser.grab_element_text_xpath(enrollmentTypeTextXPath, timeout=0.25)
+    else:
+        dueDate = '**Not Found**'
+        adjustedDueDate = '**Not Found**'
+        state = '**Not Found**'
+        specialty = '**Not Found**'
+        reassignedProviders = '**Not Found**'
+        enrollmentType = '**Not Found**' 
+
+    print('Output Check - NPI: ' + str(npi) + ', Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
+    resultsDict = {'npi':str(npi), 'organization': str(organization), 'dueDate':str(dueDate), 'adjustedDueDate':str(adjustedDueDate), 'state': str(state).replace('State: ',''), 'specialty':str(specialty).replace('Specialty: ', ''), 'reassignedProviders':str(reassignedProviders).replace('Reassigned Providers: ',''), 'enrollmentType':str(enrollmentType).replace( 'Enrollment Type: ',''), 'lastChecked':str(currentDate)}
+    outputFinalList.append(resultsDict)
+
+results = pd.DataFrame.from_dict(outputFinalList)
+
+endTime = datetime.datetime.now()
+print('Finished testing at: ' + str(endTime))
+browser.close()
