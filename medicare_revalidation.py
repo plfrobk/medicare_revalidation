@@ -14,9 +14,9 @@ adjustedDatesURL = '&dateFilterType=withAdjustedDueDates'
 
 osRunningScript = system()
 if osRunningScript == 'Darwin':
-    excelLocation = '/results/Medicare_Revalidation_Results.xlsx'
+    excelLocation = './results/Medicare_Revalidation_Results.xlsx'
 if osRunningScript == 'Windows':
-    excelLocation = '\\results\\Medicare_Revalidation_Results.xlsx'
+    excelLocation = '.\\results\\Medicare_Revalidation_Results.xlsx'
 
 debugNPIList = ['1144395195', '1184154536', '1386640035']
 
@@ -62,14 +62,17 @@ for row in range(1,totalRows):
     if organization != '**Not Found**':
         dueDate = browser.grab_element_text('div', 'class', 'gray revalidation_date_size', timeout=0.25)
         adjustedDueDate = browser.grab_element_text('div', 'class', 'revalidation_date_size', timeout=0.25)
+        
         stateTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]'
-        specialtyTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]'
-        reassignedProvidersTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[3]'
-        enrollmentTypeTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[4]'
-
         state = browser.grab_element_text_xpath(stateTextXPath, timeout=0.25)
+
+        specialtyTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]'
         specialty = browser.grab_element_text_xpath(specialtyTextXPath, timeout=0.25)
+
+        reassignedProvidersTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[3]'
         reassignedProviders = browser.grab_element_text_xpath(reassignedProvidersTextXPath, timeout=0.25)
+
+        enrollmentTypeTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[4]'
         enrollmentType = browser.grab_element_text_xpath(enrollmentTypeTextXPath, timeout=0.25)
     else:
         dueDate = '**Not Found**'
@@ -79,7 +82,7 @@ for row in range(1,totalRows):
         reassignedProviders = '**Not Found**'
         enrollmentType = '**Not Found**' 
     
-    print('Row ' + str(row) + ' Output Check - Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
+    print('Row ' + str(row) + ' Output - Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
 
     if debug:
         pass
