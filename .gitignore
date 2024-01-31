@@ -2,6 +2,7 @@
 results/*
 selenium_logs/*
 reference
+bin/chrome_driver/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

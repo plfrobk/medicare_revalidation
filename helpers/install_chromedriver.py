@@ -34,7 +34,7 @@ class InstallChromeDriver():
     latestChromeDriverVersion = get(f'https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{currentVersionRoot}').text
     
     if self.system == 'Darwin':
-      localChromeDriverDirectory = '/Users/home/Library/CloudStorage/OneDrive-Personal/Programming/Common/ChromeDriver_Latest'
+      localChromeDriverDirectory = './bin/chrome_driver'
     
       try:
         remove(localChromeDriverDirectory + '/chrome-mac-arm64/')
@@ -48,7 +48,7 @@ class InstallChromeDriver():
       print("Successfully installed latest version of Chrome Driver")
 
     elif self.system == 'Windows':
-      localChromeDriverDirectory = 'C:\\Users\\rjkai\\OneDrive\\Programming\\Common\\ChromeDriver_Latest'
+      localChromeDriverDirectory = '.\\bin\\chrome_driver'
 
       try:
         remove(localChromeDriverDirectory + "\\chrome-win64\\")
