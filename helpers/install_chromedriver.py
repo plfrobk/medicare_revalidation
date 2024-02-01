@@ -11,23 +11,25 @@ class InstallChromeDriver():
   def get_chrome_version_root(self):
     if self.system == 'Darwin':
     #FOR MAC
-      configFileContents = []
-      with open('/Applications/Google Chrome.app/Contents/Info.plist', 'r') as xmlConfigFile:
-        for line in xmlConfigFile:
-          formattedLine = line.replace('\n', '').replace('\t', '')
-          configFileContents.append(formattedLine)
+      infoFileContents = []
+      with open('/Applications/Google Chrome.app/Contents/Info.plist', 'r') as xmlInfoFile:
+        for line in xmlInfoFile:
+          lineWithoutBreaks = line.replace('\n', '').replace('\t', '')
+          infoFileContents.append(lineWithoutBreaks)
 
-      keyIndex = configFileContents.index('<key>KSVersion</key>')
-      versionRoot = configFileContents[keyIndex + 1].replace('<string>', '').replace('</string>', '')[:3]
+      keyIndex = infoFileContents.index('<key>KSVersion</key>')
+      versionNumberFull = infoFileContents[keyIndex + 1].replace('<string>', '').replace('</string>', '')
+      versionNumberRoot = versionNumberFull[:3]
     
     elif self.system == 'Windows':
       #FOR WIN
-      versionRoot = listdir("C:\\Program Files (x86)\\Google\\Chrome\\Application")[0][:3]
+      versionNumberFull = listdir("C:\\Program Files (x86)\\Google\\Chrome\\Application")[0]
+      versionNumberRoot = versionNumberFull[:3]
     
     else:
       print('Error! Unsupported OS to run script')
 
-    return versionRoot
+    return versionNumberRoot
 
   def install_chromedriver(self):
     currentVersionRoot = self.get_chrome_version_root()
