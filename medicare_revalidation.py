@@ -6,7 +6,7 @@ from helpers.install_chromedriver import InstallChromeDriver
 
 #-----------GLOBAL VARIABLES----------#
 isHeadless = True
-debug = False
+debug = True
 onlyAdjustedDates = False
 
 baseURL = 'https://data.cms.gov/tools/medicare-revalidation-list?size=10&offset=0&npi='
@@ -18,7 +18,7 @@ if osRunningScript == 'Darwin':
 if osRunningScript == 'Windows':
     excelLocation = '.\\results\\Medicare_Revalidation_Results.xlsx'
 
-debugNPIList = ['1184154536', '1386640035', '1053609727'] #Three examples where two should show up with results and one does not
+debugNPIList = ['1184154536', '1386640035', '1053609727'] #Three examples for testing where two should show up with results and one does not
 
 #-----------------MAIN----------------#
 try:
@@ -54,33 +54,25 @@ for row in range(1,totalRows):
     else:
         browser.get(baseURL + str(npiValue))
     
-    try:
-        organization = browser.grab_element_text('a', 'class', 'ToolResults_row_name', waitBefore=2, timeout=8)
-    except:
+    fullResults = browser.grab_element_text('div', 'class', 'ToolsResultsRows', waitBefore=2, timeout=8)
+    fullResultsToArray = fullResults.split('\n')
+
+    if fullResults == '':
         organization = '**Not Found**'
-    
-    if organization != '**Not Found**':
-        dueDate = browser.grab_element_text('div', 'class', 'gray revalidation_date_size', timeout=0.25)
-        adjustedDueDate = browser.grab_element_text('div', 'class', 'revalidation_date_size', timeout=0.25)
-        
-        stateTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[1]'
-        state = browser.grab_element_text_xpath(stateTextXPath, timeout=0.25)
-
-        specialtyTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[2]'
-        specialty = browser.grab_element_text_xpath(specialtyTextXPath, timeout=0.25)
-
-        reassignedProvidersTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[3]'
-        reassignedProviders = browser.grab_element_text_xpath(reassignedProvidersTextXPath, timeout=0.25)
-
-        enrollmentTypeTextXPath = '//*[@id="root"]/div/div/div/div/div/div/div[5]/div[1]/div/div/div[2]/div[2]/div[3]/div[4]'
-        enrollmentType = browser.grab_element_text_xpath(enrollmentTypeTextXPath, timeout=0.25)
-    else:
         dueDate = '**Not Found**'
         adjustedDueDate = '**Not Found**'
         state = '**Not Found**'
         specialty = '**Not Found**'
         reassignedProviders = '**Not Found**'
         enrollmentType = '**Not Found**' 
+    else:
+        organization = fullResultsToArray[1]
+        dueDate = fullResultsToArray[4]
+        adjustedDueDate = fullResultsToArray[6]
+        state = fullResultsToArray[7]
+        specialty = fullResultsToArray[8]
+        reassignedProviders = fullResultsToArray[9]
+        enrollmentType = fullResultsToArray[10]
     
     print('Row ' + str(row) + ' Output - Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
 
