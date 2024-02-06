@@ -1,4 +1,4 @@
-from os import listdir, remove
+from os import listdir, remove, getcwd
 from platform import system
 from shutil import unpack_archive
 from wget import download
@@ -36,7 +36,7 @@ class InstallChromeDriver():
     latestChromeDriverVersion = get(f'https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_{currentVersionRoot}').text
     
     if self.system == 'Darwin':
-      localChromeDriverDirectory = './bin/chrome_driver/'
+      localChromeDriverDirectory = getcwd() + '/bin/chrome_driver/'
     
       try:
         remove(localChromeDriverDirectory + 'chrome-mac-arm64/')
@@ -50,7 +50,7 @@ class InstallChromeDriver():
       print("Successfully installed latest version of Chrome Driver")
 
     elif self.system == 'Windows':
-      localChromeDriverDirectory = '.\\bin\\chrome_driver\\'
+      localChromeDriverDirectory = getcwd() + '\\bin\\chrome_driver\\'
 
       try:
         remove(localChromeDriverDirectory + "chrome-win64\\")

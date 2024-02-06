@@ -1,12 +1,13 @@
 from datetime import datetime
 from platform import system
 from openpyxl import load_workbook
+from os import getcwd
 from helpers.custom_webdriver import ChromeWebDriver
 from helpers.install_chromedriver import InstallChromeDriver
 
 #-----------GLOBAL VARIABLES----------#
 isHeadless = True
-debug = True
+debug = False
 onlyAdjustedDates = False
 
 baseURL = 'https://data.cms.gov/tools/medicare-revalidation-list?size=10&offset=0&npi='
@@ -14,9 +15,9 @@ adjustedDatesURL = '&dateFilterType=withAdjustedDueDates'
 
 osRunningScript = system()
 if osRunningScript == 'Darwin':
-    excelLocation = './results/Medicare_Revalidation_Results.xlsx'
+    excelLocation = getcwd() + '/results/Medicare_Revalidation_Results.xlsx'
 if osRunningScript == 'Windows':
-    excelLocation = '.\\results\\Medicare_Revalidation_Results.xlsx'
+    excelLocation = getcwd() + '\\results\\Medicare_Revalidation_Results.xlsx'
 
 debugNPIList = ['1184154536', '1386640035', '1053609727'] #Three examples for testing where two should show up with results and one does not
 
@@ -68,11 +69,11 @@ for row in range(1,totalRows):
     else:
         organization = fullResultsToArray[1]
         dueDate = fullResultsToArray[4]
-        adjustedDueDate = fullResultsToArray[6]
-        state = fullResultsToArray[7]
-        specialty = fullResultsToArray[8]
-        reassignedProviders = fullResultsToArray[9]
-        enrollmentType = fullResultsToArray[10]
+        adjustedDueDate = 'N/A'
+        state = fullResultsToArray[5]
+        specialty = fullResultsToArray[6]
+        reassignedProviders = fullResultsToArray[7]
+        enrollmentType = fullResultsToArray[8]
     
     print('Row ' + str(row) + ' Output - Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
 
@@ -90,11 +91,7 @@ for row in range(1,totalRows):
             rowDueDate.value = dueDate
 
         rowAdjustedDueDate = sheet.cell(row=rowNumberIncludingHeader, column=4)
-        try:
-            adjustedDueDateConverted = datetime.datetime.strptime(adjustedDueDate, "%m/%d/%Y")
-            rowAdjustedDueDate.value = adjustedDueDateConverted
-        except:
-            rowAdjustedDueDate.value = adjustedDueDate
+        rowAdjustedDueDate.value = adjustedDueDate
 
         rowState = sheet.cell(row=rowNumberIncludingHeader, column=5)
         rowState.value = str(state).replace('State: ', '')

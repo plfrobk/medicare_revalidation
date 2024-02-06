@@ -1,5 +1,6 @@
 from time import sleep
 from platform import system
+from os import getcwd
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
@@ -21,8 +22,8 @@ class ChromeWebDriver(Chrome):
             #self.opts.add_argument('--disable-dev-shm-usage')
         else:
             self.opts = Options()
-            if system() == 'Darwin': self.opts.add_argument("user-data-dir=./selenium_logs")
-            if system() == 'Windows': self.opts.add_argument("user-data-dir=.\\selenium_logs")
+            if system() == 'Darwin': self.opts.add_argument("user-data-dir=" + getcwd() + "/selenium_logs")
+            if system() == 'Windows': self.opts.add_argument("user-data-dir=" + getcwd() + "\\selenium_logs")
             self.opts.add_argument('log-level=3')
         
         super().__init__(options=self.opts)
