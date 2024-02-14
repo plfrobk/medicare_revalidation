@@ -6,8 +6,8 @@ from helpers.custom_webdriver import ChromeWebDriver
 from helpers.install_chromedriver import InstallChromeDriver
 
 #-----------GLOBAL VARIABLES----------#
-isHeadless = True
-debug = False
+foregroundFlag = True
+debugFlag = False
 onlyAdjustedDates = False
 
 baseURL = 'https://data.cms.gov/tools/medicare-revalidation-list?size=10&offset=0&npi='
@@ -23,16 +23,16 @@ debugNPIList = ['1184154536', '1386640035', '1053609727'] #Three examples for te
 
 #-----------------MAIN----------------#
 try:
-    browser = ChromeWebDriver(isHeadless)
+    browser = ChromeWebDriver(foregroundFlag)
 except:
     InstallChromeDriver().install_chromedriver()
-    browser = ChromeWebDriver(isHeadless)
+    browser = ChromeWebDriver(foregroundFlag)
 
 startTime = datetime.now()
 print('Started data pull at: ' + str(startTime))
 
 #-----------------MAIN CODE--------------#
-if debug:
+if debugFlag:
     print('Debugging')
     totalRows = len(debugNPIList) + 1
     print('Total manual lookups are: ' + str(totalRows - 1))
@@ -43,7 +43,7 @@ else:
     print('Total rows are: ' + str(totalRows))
 
 for row in range(1,totalRows):
-    if debug:
+    if debugFlag:
         npiValue = debugNPIList[row-1]
     else:
         rowNumberIncludingHeader = row + 1
@@ -77,7 +77,7 @@ for row in range(1,totalRows):
     
     print('Row ' + str(row) + ' Output - Organization: ' + str(organization) + ', Due Date: ' + str(dueDate) + ', Adjusted Due Date: ' + str(adjustedDueDate) + ', ' + str(state) + ', ' + str(specialty) + ', ' + str(reassignedProviders) + ', ' + str(enrollmentType))
 
-    if debug:
+    if debugFlag:
         pass
     else:
         rowName = sheet.cell(row=rowNumberIncludingHeader, column=2)
@@ -111,7 +111,7 @@ for row in range(1,totalRows):
         rowLastChecked = sheet.cell(row=rowNumberIncludingHeader, column=9)
         rowLastChecked.value = startTime
 
-if debug:
+if debugFlag:
     pass
 else:
     workBook.save(excelLocation)

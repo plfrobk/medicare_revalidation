@@ -12,20 +12,26 @@ class InstallChromeDriver():
     if self.system == 'Darwin':
     #FOR MAC
       infoFileContents = []
-      with open('/Applications/Google Chrome.app/Contents/Info.plist', 'r') as xmlInfoFile:
-        for line in xmlInfoFile:
-          lineWithoutBreaks = line.replace('\n', '').replace('\t', '')
-          infoFileContents.append(lineWithoutBreaks)
+      try:
+        with open('/Applications/Google Chrome.app/Contents/Info.plist', 'r') as xmlInfoFile:
+          for line in xmlInfoFile:
+            lineWithoutBreaks = line.replace('\n', '').replace('\t', '')
+            infoFileContents.append(lineWithoutBreaks)
 
-      keyIndex = infoFileContents.index('<key>KSVersion</key>')
-      versionNumberFull = infoFileContents[keyIndex + 1].replace('<string>', '').replace('</string>', '')
-      versionNumberRoot = versionNumberFull[:3]
+        keyIndex = infoFileContents.index('<key>KSVersion</key>')
+        versionNumberFull = infoFileContents[keyIndex + 1].replace('<string>', '').replace('</string>', '')
+        versionNumberRoot = versionNumberFull[:3]
+      except FileNotFoundError:
+        print('Chrome not installed or not in default Mac app location! Please install or reinstall Chrome using defaults')
     
     elif self.system == 'Windows':
       #FOR WIN
-      versionNumberFull = listdir("C:\\Program Files (x86)\\Google\\Chrome\\Application")[0]
-      versionNumberRoot = versionNumberFull[:3]
-    
+      try:
+        versionNumberFull = listdir("C:\\Program Files (x86)\\Google\\Chrome\\Application")[0]
+        versionNumberRoot = versionNumberFull[:3]
+      except FileNotFoundError:
+        print('Chrome not installed or not in default Windows program files location! Please install or reinstall Chrome using defaults')
+
     else:
       print('Error! Unsupported OS to run script')
 

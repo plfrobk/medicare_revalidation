@@ -12,21 +12,19 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 class ChromeWebDriver(Chrome):
-    def __init__(self, headless):
-        if headless:
+    def __init__(self, foreground):
+        if foreground:
+            self.opts = Options()
+            if system() == 'Darwin': self.opts.add_argument("user-data-dir=" + getcwd() + "/selenium_logs")
+            if system() == 'Windows': self.opts.add_argument("user-data-dir=" + getcwd() + "\\selenium_logs")
+            self.opts.add_argument('log-level=3')
+        else:
             self.opts = Options()
             self.opts.add_argument('--headless')
             self.opts.add_argument('window-size=1920,1080')
             self.opts.add_argument('log-level=2')
             #self.opts.add_argument('--no-sandbox')
             #self.opts.add_argument('--disable-dev-shm-usage')
-        else:
-            self.opts = Options()
-            if system() == 'Darwin': self.opts.add_argument("user-data-dir=" + getcwd() + "/selenium_logs")
-            if system() == 'Windows': self.opts.add_argument("user-data-dir=" + getcwd() + "\\selenium_logs")
-            self.opts.add_argument('log-level=3')
-        
-        super().__init__(options=self.opts)
 
     def wait_for_name(self, elementName, timeout=15, pollFrequency=1):
         WebDriverWait(self, timeout, poll_frequency=pollFrequency).until(EC.visibility_of_any_elements_located((By.NAME,elementName)))
